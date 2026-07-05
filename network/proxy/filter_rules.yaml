@@ -1,0 +1,47 @@
+# Corporate proxy filter rules — simulates Zscaler category blocking
+
+blocked_domains:
+  # AI services (commonly restricted in enterprises)
+  - api.anthropic.com
+  - api.openai.com
+  - generativelanguage.googleapis.com
+  - huggingface.co
+  - replicate.com
+  # Cloud storage
+  - drive.google.com
+  - dropbox.com
+  - box.com
+  - wetransfer.com
+  # Code/data exfil vectors
+  - pastebin.com
+  - hastebin.com
+  - gist.github.com
+  - ghostbin.co
+  # Tunnel/proxy services
+  - ngrok.io
+  - ngrok.com
+  - serveo.net
+  - localhost.run
+  - pagekite.net
+  # DNS-over-HTTPS (bypass corporate DNS)
+  - dns.google
+  - cloudflare-dns.com
+  - doh.opendns.com
+  # Webhook/request inspection (data exfil)
+  - webhook.site
+  - requestbin.com
+  - pipedream.com
+  - hookbin.com
+
+blocked_patterns:
+  - ".*\\.onion.*"
+  - ".*socks5?://.*"
+  - ".*proxy\\..*"
+  - ".*tunnel\\..*"
+  - ".*\\/api\\/v[0-9]+\\/.*bypass.*"
+
+# Categories that trigger alert even if not fully blocked
+alert_patterns:
+  - "base64"
+  - "encoded"
+  - "obfuscat"

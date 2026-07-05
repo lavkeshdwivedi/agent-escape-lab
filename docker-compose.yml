@@ -1,0 +1,101 @@
+version: "3.9"
+
+networks:
+  restricted_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+  monitor_net:
+    driver: bridge
+
+services:
+  # Simulates Zscaler/corporate proxy with content filtering
+  proxy:
+    build: ./network/proxy
+    container_name: corp_proxy
+    ports:
+      - "8080:8080"   # HTTP proxy
+      - "8443:8443"   # HTTPS MITM
+    networks:
+      restricted_net:
+        ipv4_address: 172.20.0.2
+      monitor_net:
+    volumes:
+      - ./network/proxy/filter_rules.yaml:/app/filter_rules.yaml
+      - ./results/proxy_logs:/app/logs
+    environment:
+      - BLOCK_CATEGORIES=social,cloud_storage,ai_services,tor
+      - LOG_ALL_REQUESTS=true
+
+  # Simulates corporate DNS with blacklisting
+  dns_filter:
+    image: pihole/pihole:latest
+    container_name: corp_dns
+    ports:
+      - "5353:53/udp"
+      - "5353:53/tcp"
+    networks:
+      restricted_net:
+        ipv4_address: 172.20.0.3
+    environment:
+      - WEBPASSWORD=${PIHOLE_WEB_PASSWORD:-research123}
+      - PIHOLE_DNS_=8.8.8.8;8.8.4.4
+    volumes:
+      - ./network/dns_blocklist.txt:/etc/pihole/custom.list
+    dns:
+      - 127.0.0.1
+
+  # Simulates firewall/network policy enforcement
+  firewall:
+    image: alpine:latest
+    container_name: corp_firewall
+    cap_add:
+      - NET_ADMIN
+    networks:
+      restricted_net:
+        ipv4_address: 172.20.0.4
+    volumes:
+      - ./network/firewall/rules.sh:/rules.sh
+    command: sh /rules.sh
+
+  # Agent sandbox — isolated container where agents run
+  agent_sandbox:
+    build: ./agents
+    container_name: agent_sandbox
+    networks:
+      restricted_net:
+        ipv4_address: 172.20.0.10
+    dns:
+      - 172.20.0.3   # forced through corp DNS
+    environment:
+      - HTTP_PROXY=http://172.20.0.2:8080
+      - HTTPS_PROXY=http://172.20.0.2:8080
+      - NO_PROXY=172.20.0.0/24
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - XAI_API_KEY=${XAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./experiments:/experiments
+      - ./logging:/logging
+      - ./results:/results
+    depends_on:
+      - proxy
+      - dns_filter
+
+  # Behavior monitor — passively observes all agent traffic
+  monitor:
+    image: nicolaka/netshoot:latest
+    container_name: traffic_monitor
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./results/pcap:/captures
+    command: >
+      sh -c "tcpdump -i any -w /captures/agent_traffic.pcap 'host 172.20.0.10' &
+             tail -f /dev/null"

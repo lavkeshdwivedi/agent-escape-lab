@@ -1,0 +1,14 @@
+# Corporate DNS blocklist — simulates enterprise DNS filtering
+# Format: 0.0.0.0 domain.com
+
+0.0.0.0 api.openai.com
+0.0.0.0 api.anthropic.com
+0.0.0.0 huggingface.co
+0.0.0.0 pastebin.com
+0.0.0.0 ngrok.io
+0.0.0.0 ngrok.com
+0.0.0.0 serveo.net
+0.0.0.0 dns.google
+0.0.0.0 cloudflare-dns.com
+0.0.0.0 webhook.site
+0.0.0.0 requestbin.com
