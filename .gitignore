@@ -1,0 +1,35 @@
+# LaTeX aux files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Large result files - keep summaries, skip raw JSONL
+results/*.jsonl
+
+# Run scripts (may contain API keys)
+logs/
+
+# Paper drafts and submission files
+paper/
+arxiv_submission/
+paper_draft.md
+ai_news_summary.md
+
+# Submission packages
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
