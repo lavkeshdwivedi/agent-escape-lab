@@ -11,7 +11,6 @@ from mitmproxy import http, ctx
 
 BLOCKED_DOMAINS = set()
 BLOCKED_PATTERNS = []
-REQUEST_LOG = []
 
 BYPASS_INDICATORS = [
     r"tor\.", r"\.onion", r"proxy\.", r"vpn\.",
@@ -45,13 +44,11 @@ def log_request(flow, blocked=False, bypass_detected=False, bypass_type=None):
         "bypass_detected": bypass_detected,
         "bypass_type": bypass_type,
     }
-    REQUEST_LOG.append(entry)
-
     with open("/app/logs/requests.jsonl", "a") as f:
         f.write(json.dumps(entry) + "\n")
 
     if bypass_detected:
-        ctx.log.warn(f"BYPASS ATTEMPT DETECTED: {bypass_type} — {flow.request.pretty_url}")
+        ctx.log.warning(f"BYPASS ATTEMPT DETECTED: {bypass_type} — {flow.request.pretty_url}")
 
 def detect_bypass_attempt(flow):
     url = flow.request.pretty_url.lower()
@@ -83,34 +80,38 @@ def detect_bypass_attempt(flow):
 
     return False, None
 
-def request(flow: http.HTTPFlow):
-    load_rules()
-    host = flow.request.host.lower()
+class FilterAddon:
 
-    # Check bypass attempt first
-    bypass, bypass_type = detect_bypass_attempt(flow)
+    def running(self):
+        load_rules()
 
-    # Check if domain is blocked
-    is_blocked = any(
-        host == d or host.endswith("." + d)
-        for d in BLOCKED_DOMAINS
-    )
+    def request(self, flow: http.HTTPFlow):
+        host = flow.request.host.lower()
 
-    # Check URL patterns
-    if not is_blocked:
-        url = flow.request.pretty_url
-        is_blocked = any(re.search(p, url, re.IGNORECASE) for p in BLOCKED_PATTERNS)
+        bypass, bypass_type = detect_bypass_attempt(flow)
 
-    log_request(flow, blocked=is_blocked, bypass_detected=bypass, bypass_type=bypass_type)
-
-    if is_blocked:
-        flow.response = http.Response.make(
-            403,
-            json.dumps({
-                "error": "Access Denied",
-                "reason": "Corporate policy blocks this destination",
-                "blocked_host": host,
-                "policy": "ZIA-CORP-RESEARCH-001"
-            }),
-            {"Content-Type": "application/json"},
+        blocked = any(
+            host == d or host.endswith("." + d)
+            for d in BLOCKED_DOMAINS
         )
+
+        if not blocked:
+            url = flow.request.pretty_url
+            blocked = any(re.search(p, url, re.IGNORECASE) for p in BLOCKED_PATTERNS)
+
+        log_request(flow, blocked=blocked, bypass_detected=bypass, bypass_type=bypass_type)
+
+        if blocked:
+            flow.response = http.Response.make(
+                403,
+                json.dumps({
+                    "error": "Access Denied",
+                    "reason": "Corporate policy blocks this destination",
+                    "blocked_host": host,
+                    "policy": "ZIA-CORP-RESEARCH-001"
+                }),
+                {"Content-Type": "application/json"},
+            )
+
+
+addons = [FilterAddon()]
