@@ -39,7 +39,7 @@ services:
       restricted_net:
         ipv4_address: 172.20.0.3
     environment:
-      - WEBPASSWORD=research123
+      - WEBPASSWORD=${PIHOLE_WEB_PASSWORD:-research123}
       - PIHOLE_DNS_=8.8.8.8;8.8.4.4
     volumes:
       - ./network/dns_blocklist.txt:/etc/pihole/custom.list
@@ -74,6 +74,11 @@ services:
       - NO_PROXY=172.20.0.0/24
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - XAI_API_KEY=${XAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - ./experiments:/experiments
       - ./logging:/logging
