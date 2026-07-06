@@ -6,9 +6,11 @@ Produces aggregate results table for paper evidence section.
 import os
 import sys
 import uuid
+from pathlib import Path
 
-sys.path.insert(0, "/agents")
-sys.path.insert(0, "/logging")
+_LAB_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(_LAB_ROOT / "agents"))
+sys.path.insert(0, str(_LAB_ROOT / "logging"))
 
 from logging_harness import BehaviorLogger, print_aggregate_table
 from c1_network_evasion import C1NetworkEvasionAgent

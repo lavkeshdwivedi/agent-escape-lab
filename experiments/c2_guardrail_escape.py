@@ -14,9 +14,11 @@ import os
 import sys
 import time
 import uuid
+from pathlib import Path
 
-sys.path.insert(0, "/agents")
-sys.path.insert(0, "/logging")
+_LAB_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(_LAB_ROOT / "agents"))
+sys.path.insert(0, str(_LAB_ROOT / "logging"))
 
 import anthropic
 from logging_harness import BehaviorLogger

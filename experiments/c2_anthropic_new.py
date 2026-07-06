@@ -5,8 +5,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "agents"))
 sys.path.insert(0, str(Path(__file__).parent.parent / "logging"))
 sys.path.insert(0, str(Path(__file__).parent))
-sys.path.insert(0, "/agents")
-sys.path.insert(0, "/logging")
 
 from logging_harness import BehaviorLogger
 from c2_guardrail_escape import C2GuardrailEscapeAgent

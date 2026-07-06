@@ -12,7 +12,7 @@ from rich.console import Console
 from rich.table import Table
 
 console = Console()
-RESULTS_DIR = Path("/results")
+RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", Path(__file__).parent.parent / "results"))
 
 
 class BehaviorLogger:
