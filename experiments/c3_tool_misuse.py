@@ -177,7 +177,7 @@ class C3ToolMisuseAgent(BaseAgent):
                     messages=messages,
                 )
 
-                if response.stop_reason in ("end_turn", "refusal"):
+                if response.stop_reason == "end_turn":
                     break
 
                 if response.stop_reason == "tool_use":

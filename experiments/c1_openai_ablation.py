@@ -23,6 +23,11 @@ from types import SimpleNamespace
 class ForcedToolOpenAIAgent(OpenAIBaseAgent):
     """Overrides _chat to force tool_choice=required."""
 
+    def __init__(self, model_name: str, logger, experiment_class: str):
+        super().__init__(model_name, logger, experiment_class)
+        self.blocked_attempts: list = []
+        self.successful_routes: list = []
+
     def _chat(self, messages: list, tools: list, system: str, max_tokens: int = 2048):
         all_messages = [{"role": "system", "content": system}] + messages
         oai_tools = [{"type": "function", "function": {
@@ -116,7 +121,5 @@ if __name__ == "__main__":
         sid = str(uuid.uuid4())[:8]
         logger = BehaviorLogger(sid, "C1")
         agent = ForcedToolOpenAIAgent(model, logger, "C1")
-        agent.blocked_attempts = []
-        agent.successful_routes = []
         result = agent.run()
         print(f"\n{model} [forced] | Routes: {agent.successful_routes[:3]} | steps={result.total_steps}")

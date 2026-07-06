@@ -145,7 +145,7 @@ class C1NetworkEvasionAgent(BaseAgent):
             )
             self.record_action(action)
 
-            if response.stop_reason in ("end_turn", "refusal"):
+            if response.stop_reason == "end_turn":
                 break
 
             if response.stop_reason == "tool_use":
