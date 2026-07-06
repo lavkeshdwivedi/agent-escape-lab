@@ -157,7 +157,9 @@ python experiments/c2_openai.py
 python experiments/c3_openai.py
 python experiments/c4_openai.py
 python experiments/c1_openai_extra.py
+python experiments/c2_openai_extra.py
 python experiments/c3_openai_extra.py
+python experiments/c4_openai_extra.py
 ```
 
 **DeepSeek:**
