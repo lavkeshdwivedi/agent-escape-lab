@@ -11,4 +11,7 @@ class XAIBaseAgent(OllamaBaseAgent):
 
     def __init__(self, model_name: str, logger, experiment_class: str):
         super().__init__(model_name, logger, experiment_class)
-        self.client = OpenAI(base_url=XAI_BASE, api_key=os.environ["XAI_API_KEY"])
+        api_key = os.environ.get("XAI_API_KEY")
+        if not api_key:
+            raise EnvironmentError("XAI_API_KEY is not set. Export it before running xAI experiments.")
+        self.client = OpenAI(base_url=XAI_BASE, api_key=api_key)

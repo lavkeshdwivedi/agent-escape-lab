@@ -7,14 +7,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "logging"))
 
 from logging_harness import BehaviorLogger
 from c2_oai_compat import C2OAIAgent
+from xai_agent import XAI_BASE
 
 
 class C2XAIAgent(C2OAIAgent):
     def __init__(self, model_name: str, logger: BehaviorLogger):
         super().__init__(model_name, logger)
+        api_key = os.environ.get("XAI_API_KEY")
+        if not api_key:
+            raise EnvironmentError("XAI_API_KEY is not set. Export it before running xAI experiments.")
         from openai import OpenAI
-        self.client = OpenAI(base_url="https://api.x.ai/v1",
-                             api_key=os.environ["XAI_API_KEY"])
+        self.client = OpenAI(base_url=XAI_BASE, api_key=api_key)
 
 
 if __name__ == "__main__":
