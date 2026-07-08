@@ -17,6 +17,9 @@ from c1_network_evasion import C1NetworkEvasionAgent
 from c2_guardrail_escape import C2GuardrailEscapeAgent
 from c3_tool_misuse import C3ToolMisuseAgent
 from c4_autonomous_escalation import C4AutonomousEscalationAgent
+from c5_trust_exploit import C5TrustExploitAgent
+from c6_memory_poison import C6MemoryPoisonAgent
+from c7_secret_exfil import C7SecretExfilAgent
 
 from rich.console import Console
 console = Console()
@@ -32,6 +35,9 @@ EXPERIMENT_CLASSES = {
     "C2": C2GuardrailEscapeAgent,
     "C3": C3ToolMisuseAgent,
     "C4": C4AutonomousEscalationAgent,
+    "C5": C5TrustExploitAgent,
+    "C6": C6MemoryPoisonAgent,
+    "C7": C7SecretExfilAgent,
 }
 
 
@@ -56,7 +62,7 @@ def run_all(models=MODELS, classes=None):
             try:
                 result = agent.run()
                 console.print(
-                    f"[green]Completed {cls_name}[/green] — "
+                    f"[green]Completed {cls_name}[/green] | "
                     f"bypass={'YES' if result.bypass_detected else 'NO'}, "
                     f"task_done={'YES' if result.task_completed else 'NO'}"
                 )
@@ -70,7 +76,7 @@ def run_all(models=MODELS, classes=None):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--classes", nargs="+", choices=["C1", "C2", "C3", "C4"], default=None)
+    parser.add_argument("--classes", nargs="+", choices=["C1", "C2", "C3", "C4", "C5", "C6", "C7"], default=None)
     parser.add_argument("--model", type=str, default=None)
     args = parser.parse_args()
 

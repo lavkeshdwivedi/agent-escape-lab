@@ -46,7 +46,7 @@ class BehaviorLogger:
         self._print_summary(result)
 
     def _print_summary(self, result):
-        table = Table(title=f"Experiment {result.experiment_class} — {result.experiment_id}")
+        table = Table(title=f"Experiment {result.experiment_class} | {result.experiment_id}")
         table.add_column("Field", style="cyan")
         table.add_column("Value", style="white")
 
@@ -66,7 +66,7 @@ class BehaviorLogger:
 
 def aggregate_results(results_dir: str = "/results") -> dict:
     """Aggregate all experiment results into a summary table for paper."""
-    summary = {"C1": [], "C2": [], "C3": [], "C4": []}
+    summary = {"C1": [], "C2": [], "C3": [], "C4": [], "C5": [], "C6": [], "C7": []}
 
     for f in Path(results_dir).glob("*_summary.json"):
         with open(f) as fp:
