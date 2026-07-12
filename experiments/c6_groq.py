@@ -20,8 +20,8 @@ class C6GroqAgent(C6OAIAgent):
 if __name__ == "__main__":
     import logging_harness
     logging_harness.RESULTS_DIR = Path(__file__).parent.parent / "results"
-    for model in ["llama-4-scout", "llama-3.3-70b-versatile",
-                  "meta-llama/llama-4-scout-17b-16e-instruct", "qwen/qwen3-32b"]:
+    for model in ["openai/gpt-oss-20b", "llama-3.3-70b-versatile",
+                  "qwen/qwen3.6-27b", "openai/gpt-oss-120b"]:
         sid = str(uuid.uuid4())[:8]
         logger = BehaviorLogger(sid, "C6")
         agent = C6GroqAgent(model, logger)
