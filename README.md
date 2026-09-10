@@ -264,7 +264,11 @@ results/         experiment summary JSONs and final_stats.json
 
 ## Paper
 
-Preprint: *Escape Vectors of Autonomous AI Agents: An Attack Surface Analysis of Guardrail and Network Control Bypasses*, arXiv submission forthcoming (cs.AI).
+The full write-up, including related work, threat model, statistical caveats, and limitations, is in [`PAPER.md`](PAPER.md).
+
+This is a cross-provider pilot survey, not a set of novel per-category attack discoveries: the related-work section names the larger, more mechanistically grounded 2026 benchmarks and surveys that already cover several of these categories (multi-turn prompt injection, memory poisoning, credential exfiltration, multi-agent trust). What this lab adds is a shared harness run across 29 models and 8 providers, enabling head-to-head comparisons a single-category study cannot make.
+
+Most model/category cells in the results below are a single run (see `results/aggregate.csv` for exact `n_runs`). Read percentages like "23 of 29 models" as single-trial outcomes, not statistically powered bypass rates, until further replication is done (see `PAPER.md` Section 6 for the roadmap).
 
 ---
 
