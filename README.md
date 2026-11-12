@@ -270,4 +270,4 @@ results/         experiment summary JSONs and final_stats.json
 
 ## Author
 
-Lavkesh Dwivedi, d.lavkesh@gmail.com
+Lavkesh Dwivedi, iamlavkesh@gmail.com
